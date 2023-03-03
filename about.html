@@ -1,91 +1,100 @@
-<html>
-  <head>
-    
-<div style="position: absolute; top: 10px; left: 10px;">
-  <button style="background-color: #333; color: #fff; padding: 10px 20px; border-radius: 5px; border: none; font-size: 18px; cursor: pointer;" onclick="window.history.back()">Go Back</button>
-</div>
+<!doctype html>
+<html class="no-js" lang="">
 
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      <title>Ai - Chat</title>
+      <meta name="description" content="">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <style>
+         #chatgpt-response {
+            font-family: "宋体";
+            font-size: 20px;
+            color: #0000FF;
+            font-weight: bold;
+         }
+</style>
 
-<style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-      }
-      
-      h1 {
-        font-size: 36px;
-        color: white;
-        margin: 40px 0 20px 0;
-      }
-      
-      p {
-        font-size: 18px;
-        color: white;
-        line-height: 1.5;
-        margin: 0 40px 40px 40px;
-        text-align: justify;
-      }
-      
-      .about-logo {
-        width: 120px;
-        height: 120px;
-        border-radius: 60px;
-        margin: 40px 0 20px 0;
-        background-color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-        transition: box-shadow 0.3s;
-      }
-      
-      .about-logo:hover {
-        box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
-        cursor: pointer;
-      }
-      
-      .about-logo img {
-        width: 80px;
-        transition: transform 0.3s;
-      }
-      
-      .about-logo img:hover {
-        transform: rotate(360deg);
-      }
-      
-      .about-content {
-        background-color: black;
-        padding: 40px;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-        width: 80%;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="about-logo">
-      <img src="https://openai.com/content/images/2022/05/openai-avatar.png" alt="Logo">
-    </div>
-    <div class="about-content">
-      <h1>About Us</h1>
-      <p>We are a group of people who want to maximize the value of the use of ChatGPT. We aim to uncover the secrets of ChatGPT and make it accessible and unlimited for everyone. Our ultimate goal is to enhance the value of ChatGPT for ordinary people and use it to improve our daily efficiency.</p>
-     <p>我们是一群想要把ChatGPT使用方法做到极致的人。我们想要解开ChatGPT的奥秘，让大家都可以理解并且无限制的为自己服务。我们的终极目的是让ChatGPT对普通人的使用价值大大提升，让它帮助我们提升日常效率。</p>
-    </div>
-  </body>
+      <script>
+         async function callCHATGPT() {
+            var responseText1 = document.getElementById("chatgpt-response");
+            responseText1.innerHTML = ""
 
+            function printMessage(message) {
+               var responseText = document.getElementById("chatgpt-response");
+               var index = 0;
 
-</html>
-<br>
-<br>
-<br>
+               // 创建一个定时器，每隔一段时间打印一个字符
+               var interval = setInterval(function() {
+                     responseText.innerHTML += message[index];
+                     index++;
 
+                     // 当打印完成时，清除定时器
+                     if (index >= message.length) {
+                        clearInterval(interval);
+                     }
+                  },
+                  150); // 每隔50毫秒打印一个字符
+            }
+            var xhr = new XMLHttpRequest();
+            var url = "https://api.openai.com/v1/chat/completions";
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader("Authorization", "Bearer API-KEY");
+            xhr.onreadystatechange = function() {
+               if (xhr.readyState === 4 && xhr.status === 200) {
+                  var json = JSON.parse(xhr.responseText);
+                  var response = json.choices[0].text;
 
-<footer style="background-color: #333; color: #fff; height: 50px; line-height: 50px; text-align: center;">
-  <p>Copyright © 2023 All About ChatGPT Website</p>
-</footer>
+                  // 将CHATGPT的返回值输出到文本框
+                  var responseText = document.getElementById("chatgpt-response");
+                  var index = 0;
+
+                  // 创建一个定时器，每隔一段时间打印一个字符
+                  var interval = setInterval(function() {
+                        responseText.innerHTML += response[index];
+                        index++;
+
+                        // 当打印完成时，清除定时器
+                        if (index >= response.length) {
+                           clearInterval(interval);
+                        }
+                     },
+                     50); // 每隔50毫秒打印一个字符
+               }
+            };
+
+            var data = JSON.stringify({
+               "prompt": document.getElementById("chat-gpt-input").value,
+               "max_tokens": 2048,
+               "temperature": 0.5,
+               "top_p": 1,
+               "frequency_penalty": 0,
+               "presence_penalty": 0,
+               "model": "gpt-3.5-turbo-0301"
+            });
+            console.log(data);
+            await printMessage('正在思考，请等待......');
+            await xhr.send(data);
+         }
+</script>
+   </head>
+
+   <body>
+
+      <div class="filter-menu text-center mb-40">
+         <h4>与Ai对话，请描述您的需求-支持中文、英语、日本语等</h4>
+      </div>
+
+      <textarea class="form-control" id="chat-gpt-input" placeholder="输入描述" rows="3" resize="none"
+         style="width: 135%; margin: 0 auto; background-color: #f4f4f4; color: #333; border: 1px solid #ccc; border-radius: 12px;"></textarea>
+      <button onclick="callCHATGPT()" autocomplete="off" class="btn btn-large" href="#"
+         style="background-color: #333; color: #f4f4f4; border-radius: 10px">
+         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>回答
+      </button>
+      <textarea class="form-control" id="chatgpt-response"
+         placeholder="请耐心等待回答 Ai生成它很快，但是由于网络问题我们需要等待，通常内容越长等待越久 如果长时间没反应请刷新页面重试" rows="26" resize="none"
+         style="width: 150%;height: auto; margin: 0 auto; background-color: #f4f4f4; color: #333; border: 1px solid #ccc; border-radius: 10px; overflow: scroll;"
+         readonly="true"></textarea>
 
