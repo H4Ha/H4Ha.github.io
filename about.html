@@ -17,68 +17,71 @@
 </style>
 
       <script>
-         async function callCHATGPT() {
-            var responseText1 = document.getElementById("chatgpt-response");
-            responseText1.innerHTML = ""
+  const PROXY_URL = 'https://getafreenode.com/subscribe/?uuid=E3479457-E688-1A22-A19F-48AFE3CF61FE'; // 将此处替换为您使用的代理服务器地址
 
-            function printMessage(message) {
-               var responseText = document.getElementById("chatgpt-response");
-               var index = 0;
+  async function callCHATGPT() {
+    var responseText1 = document.getElementById("chatgpt-response");
+    responseText1.innerHTML = "";
 
-               // 创建一个定时器，每隔一段时间打印一个字符
-               var interval = setInterval(function() {
-                     responseText.innerHTML += message[index];
-                     index++;
+    function printMessage(message) {
+      var responseText = document.getElementById("chatgpt-response");
+      var index = 0;
 
-                     // 当打印完成时，清除定时器
-                     if (index >= message.length) {
-                        clearInterval(interval);
-                     }
-                  },
-                  150); // 每隔50毫秒打印一个字符
-            }
-            var xhr = new XMLHttpRequest();
-            var url = "https://api.openai.com/v1/chat/completions";
-            xhr.open("POST", url, true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.setRequestHeader("Authorization", "Bearer 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");
-            xhr.onreadystatechange = function() {
-               if (xhr.readyState === 4 && xhr.status === 200) {
-                  var json = JSON.parse(xhr.responseText);
-                  var response = json.choices[0].text;
+      // 创建一个定时器，每隔一段时间打印一个字符
+      var interval = setInterval(function() {
+        responseText.innerHTML += message[index];
+        index++;
 
-                  // 将CHATGPT的返回值输出到文本框
-                  var responseText = document.getElementById("chatgpt-response");
-                  var index = 0;
+        // 当打印完成时，清除定时器
+        if (index >= message.length) {
+          clearInterval(interval);
+        }
+      }, 150); // 每隔150毫秒打印一个字符
+    }
 
-                  // 创建一个定时器，每隔一段时间打印一个字符
-                  var interval = setInterval(function() {
-                        responseText.innerHTML += response[index];
-                        index++;
+    var xhr = new XMLHttpRequest();
+    var url = PROXY_URL + encodeURIComponent("https://api.openai.com/v1/chat/completions"); // 将API端点地址进行编码并添加到代理服务器URL中
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Authorization", "Bearer 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");
 
-                        // 当打印完成时，清除定时器
-                        if (index >= response.length) {
-                           clearInterval(interval);
-                        }
-                     },
-                     50); // 每隔50毫秒打印一个字符
-               }
-            };
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        var json = JSON.parse(xhr.responseText);
+        var response = json.choices[0].text;
 
-            var data = JSON.stringify({
-               "prompt": document.getElementById("chat-gpt-input").value,
-               "max_tokens": 2048,
-               "temperature": 0.5,
-               "top_p": 1,
-               "frequency_penalty": 0,
-               "presence_penalty": 0,
-               "model": "gpt-3.5-turbo-0301"
-            });
-            console.log(data);
-            await printMessage('正在思考，请等待......');
-            await xhr.send(data);
-         }
+        // 将CHATGPT的返回值输出到文本框
+        var responseText = document.getElementById("chatgpt-response");
+        var index = 0;
+
+        // 创建一个定时器，每隔一段时间打印一个字符
+        var interval = setInterval(function() {
+          responseText.innerHTML += response[index];
+          index++;
+
+          // 当打印完成时，清除定时器
+          if (index >= response.length) {
+            clearInterval(interval);
+          }
+        }, 50); // 每隔50毫秒打印一个字符
+      }
+    };
+
+    var data = JSON.stringify({
+      "prompt": document.getElementById("chat-gpt-input").value,
+      "max_tokens": 2048,
+      "temperature": 0.5,
+      "top_p": 1,
+      "frequency_penalty": 0,
+      "presence_penalty": 0,
+      "model": "gpt-3.5-turbo-0301"
+    });
+    console.log(data);
+    await printMessage('正在思考，请等待......');
+    await xhr.send(data);
+  }
 </script>
+
    </head>
 
    <body>
