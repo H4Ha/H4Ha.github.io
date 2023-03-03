@@ -17,7 +17,6 @@
 </style>
 
       <script>
-  const PROXY_URL = 'https://getafreenode.com/subscribe/?uuid=E3479457-E688-1A22-A19F-48AFE3CF61FE'; // 将此处替换为您使用的代理服务器地址
 
   async function callCHATGPT() {
     var responseText1 = document.getElementById("chatgpt-response");
@@ -40,7 +39,7 @@
     }
 
     var xhr = new XMLHttpRequest();
-    var url = PROXY_URL + encodeURIComponent("https://api.openai.com/v1/chat/completions"); // 将API端点地址进行编码并添加到代理服务器URL中
+    var url = PROXY_URL + encodeURIComponent("https://proxy-sea.hidemyass-freeproxy.com/proxy/en-us/aHR0cHM6Ly9hcGkub3BlbmFpLmNvbS92MS9jaGF0L2NvbXBsZXRpb25z"); // 将API端点地址进行编码并添加到代理服务器URL中
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.setRequestHeader("Authorization", "Bearer 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");
