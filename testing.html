@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>ChatGPT API Chatbot</title>
+    <title>GPT-3 API Chatbot</title>
     <style>
       .chatbot-container {
         display: flex;
@@ -64,7 +64,7 @@
   <body>
     <div class="chatbot-container">
       <div class="chatbot-header">
-        <h2>ChatGPT API Chatbot</h2>
+        <h2>GPT-3 API Chatbot</h2>
       </div>
       <div class="chatbot-messages">
         <!-- Messages will be displayed here -->
@@ -76,21 +76,26 @@
     </div>
     <script>
       const apiKey = "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";
-      
-      function sendMessage(message) {
-        const url = `http://mm1.ltd/chatgpt.php`;
-        const data = JSON.stringify({
+      const apiUrl = "https://api.openai.com/v1/engine/davinci";
+
+      async function sendMessage(message) {
+        const body = {
           prompt: message,
           max_tokens: 50,
           temperature: 0.7,
-        });
-        const headers = {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`,
+          stop: ["\n", "User:"]
         };
-        return fetch(url, { method: "POST", headers, body: data })
-          .then(response => response.json())
-          .then(data => data.choices[0].text);
+        const response = await fetch(`${apiUrl}/completions`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify(body)
+        });
+        const { choices } = await response.json();
+        const [ { text } ] = choices;
+        return text.trim();
       }
 
       function addMessage(message, sender) {
@@ -103,4 +108,30 @@
           messageElement.classList.add("chatbot-message-user");
         }
         messageElement.innerText = message;
-        messagesContainer
+        messagesContainer.appendChild(messageElement);
+      }
+
+      const inputElement = document.querySelector(".chatbot-input input");
+      const sendButton = document.querySelector(".chatbot-input button");
+
+      sendButton.addEventListener("click", async () => {
+        const message = inputElement.value;
+        if (message.trim() === "") return;
+        inputElement.value = "";
+        addMessage(message, "user");
+        const botMessage = await sendMessage(`User: ${message}\nBot:`);
+        addMessage(botMessage, "bot");
+      });
+
+      inputElement.addEventListener("keyup", async (event) => {
+        if (event.key !== "Enter") return;
+        const message = inputElement.value;
+        if (message.trim() === "") return;
+        inputElement.value = "";
+        addMessage(message, "user");
+        const botMessage = await sendMessage(`User: ${message}\nBot:`);
+        addMessage(botMessage, "bot");
+      });
+    </script>
+  </body>
+</html>
